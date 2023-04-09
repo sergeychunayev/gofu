@@ -83,7 +83,7 @@ func (v *Slice[T]) Sort(less func(a T, b T) bool) Iterable[T] {
 }
 
 func (v *Slice[T]) Cycle() Iterable[T] {
-	return &Cycle[T]{v}
+	return &cycleIterable[T]{v}
 }
 
 func (v *Slice[T]) ToSlice() []T {
@@ -92,24 +92,6 @@ func (v *Slice[T]) ToSlice() []T {
 
 func New[T any](slice []T) Iterable[T] {
 	return &Slice[T]{slice, 0}
-}
-
-type Cycle[T any] struct {
-	*Slice[T]
-}
-
-func (v *Cycle[T]) HasNext() bool {
-	return len(v.slice) > 0
-}
-
-func (v *Cycle[T]) Next() T {
-	res := v.slice[v.i]
-	v.i++
-	if v.i == len(v.slice) {
-		v.i = 0
-	}
-
-	return res
 }
 
 func Map[T any, U any](v Iterable[T], f func(v T) U) Iterable[U] {
