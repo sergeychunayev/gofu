@@ -16,7 +16,9 @@ func TestOption(t *testing.T) {
 			Of[int](1),
 			func(t *testing.T, res Option[int]) {
 				require.True(t, res.IsSome())
+				require.False(t, res.IsNone())
 				require.Equal(t, 1, res.Unwrap())
+				require.Equal(t, 1, res.UnwrapOr(2))
 			},
 		},
 		{
@@ -31,8 +33,8 @@ func TestOption(t *testing.T) {
 					}
 				}()
 				require.True(t, res.IsNone())
+				require.False(t, res.IsSome())
 				require.Equal(t, 1, res.Unwrap())
-				require.Equal(t, 1, res.UnwrapOr(2))
 			},
 		},
 		{
