@@ -144,8 +144,11 @@ func main() {
 			{"f", 8},
 			{"c", 1},
 		}).
-		Min(func(a s, b s) bool {
-			return a.value < b.value
+		Reduce(func(a s, b s) s {
+			if a.value < b.value {
+				return a
+			}
+			return b
 		})
 
 	fmt.Printf("res: %+v\n", min) // res: {name:c value:1}

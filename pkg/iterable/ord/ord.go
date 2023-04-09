@@ -16,9 +16,9 @@ type Iterable[T Ord] interface {
 
 	SumOrd() (T, bool)
 
-	MinOrd() (T, bool)
+	Min() (T, bool)
 
-	MaxOrd() (T, bool)
+	Max() (T, bool)
 }
 
 type Slice[T Ord] struct {
@@ -79,11 +79,11 @@ func (v *Slice[T]) SumOrd() (T, bool) {
 	})
 }
 
-func (v *Slice[T]) MinOrd() (T, bool) {
+func (v *Slice[T]) Min() (T, bool) {
 	return v.Reduce(Min[T])
 }
 
-func (v *Slice[T]) MaxOrd() (T, bool) {
+func (v *Slice[T]) Max() (T, bool) {
 	return v.Reduce(Max[T])
 }
 

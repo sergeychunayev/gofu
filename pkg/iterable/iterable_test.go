@@ -43,6 +43,18 @@ func TestNew(t *testing.T) {
 	}
 }
 
+func TestSlice_Filter(t *testing.T) {
+	itr := iterable.
+		New([]int{1, 2, 3, 4, 5, 5, 5, 5, 8}).
+		Filter(func(v int) bool {
+			return v%2 == 0
+		})
+	require.True(t, itr.HasNext())
+	require.Equal(t, 2, itr.Next())
+	require.Equal(t, 4, itr.Next())
+	require.Equal(t, 8, itr.Next())
+}
+
 func TestIterable(t *testing.T) {
 	arr := []int{1, 2, 3}
 	var itr iterable.Iterable[int]
@@ -71,9 +83,12 @@ func TestIterable(t *testing.T) {
 	require.True(t, ok)
 	require.True(t, someTrue)
 
-	trues := iterable.New(bools).Filter(func(v bool) bool {
-		return v
-	}).ToSlice()
+	filter := iterable.
+		New(bools).
+		Filter(func(v bool) bool {
+			return v
+		})
+	trues := filter.ToSlice()
 	require.Equal(t, []bool{true}, trues)
 
 	falses := iterable.New(bools).Filter(func(v bool) bool {
@@ -236,7 +251,12 @@ func TestMin(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			itr := iterable.New(tc.input)
-			res, ok := itr.Min(ord.Lt[int])
+			res, ok := itr.Reduce(func(acc int, v int) int {
+				if v < acc {
+					return v
+				}
+				return acc
+			})
 			tup := iterable.Tuple[int, bool]{A: res, B: ok}
 			require.Equal(t, tc.expected, tup)
 		})
@@ -278,7 +298,12 @@ func TestMax(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			itr := iterable.New(tc.input)
-			res, ok := itr.Max(ord.Gt[int])
+			res, ok := itr.Reduce(func(acc int, v int) int {
+				if v > acc {
+					return v
+				}
+				return acc
+			})
 			tup := iterable.Tuple[int, bool]{A: res, B: ok}
 			require.Equal(t, tc.expected, tup)
 		})
@@ -560,6 +585,13 @@ func TestZip(t *testing.T) {
 			require.Equal(t, tc.expected, res.ToSlice())
 		})
 	}
+}
+
+func TestMap(t *testing.T) {
+	res := iterable.Map(iterable.New([]int{1, 2, 3}), func(v int) float64 {
+		return float64(v)
+	}).ToSlice()
+	require.Equal(t, []float64{1.0, 2.0, 3.0}, res)
 }
 
 func TestFold(t *testing.T) {
