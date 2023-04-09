@@ -66,7 +66,7 @@ func main() {
 ```
 
 ### GroupBy
-https://go.dev/play/p/aVh6_VPgAym
+https://go.dev/play/p/bAEcdAmreuM
 ```go
 package main
 
@@ -95,9 +95,6 @@ func main() {
 		}).
 		Filter(func(v s) bool {
 			return v.value%2 == 0
-		}).
-		Sort(func(a s, b s) bool {
-			return a.value < b.value
 		})
 
 	res := iterable.GroupBy(itr, func(v s) string {
@@ -112,7 +109,6 @@ func main() {
 	// 	]
 	fmt.Printf("res: %+v\n", res)
 }
-
 ```
 
 ### Min
