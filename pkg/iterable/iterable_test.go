@@ -251,7 +251,12 @@ func TestMin(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			itr := iterable.New(tc.input)
-			res, ok := itr.Min(ord.Lt[int])
+			res, ok := itr.Reduce(func(acc int, v int) int {
+				if v < acc {
+					return v
+				}
+				return acc
+			})
 			tup := iterable.Tuple[int, bool]{A: res, B: ok}
 			require.Equal(t, tc.expected, tup)
 		})
@@ -293,7 +298,12 @@ func TestMax(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			itr := iterable.New(tc.input)
-			res, ok := itr.Max(ord.Gt[int])
+			res, ok := itr.Reduce(func(acc int, v int) int {
+				if v > acc {
+					return v
+				}
+				return acc
+			})
 			tup := iterable.Tuple[int, bool]{A: res, B: ok}
 			require.Equal(t, tc.expected, tup)
 		})

@@ -56,32 +56,6 @@ func TestMapIterable_Any(t *testing.T) {
 	require.True(t, res)
 }
 
-func TestMapIterable_Min(t *testing.T) {
-	res, ok := (&mapIterable[int, float64]{
-		New([]int{1, 2, 3, 4, 0}),
-		func(v int) float64 {
-			return float64(v)
-		},
-	}).Min(func(a float64, b float64) bool {
-		return a < b
-	})
-	require.True(t, ok)
-	require.Equal(t, 0.0, res)
-}
-
-func TestMapIterable_Max(t *testing.T) {
-	res, ok := (&mapIterable[int, float64]{
-		New([]int{1, 2, 3, 4}),
-		func(v int) float64 {
-			return float64(v)
-		},
-	}).Max(func(a float64, b float64) bool {
-		return a > b
-	})
-	require.True(t, ok)
-	require.Equal(t, 4.0, res)
-}
-
 func TestMapIterable_Reduce(t *testing.T) {
 	res, ok := (&mapIterable[int, float64]{
 		New([]int{1, 2, 3, 4}),

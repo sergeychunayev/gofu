@@ -33,14 +33,6 @@ func (v *mapIterable[T, U]) Any(f func(v U) bool) bool {
 	return doAny[U](v, f)
 }
 
-func (v *mapIterable[T, U]) Min(cmp func(a U, b U) bool) (U, bool) {
-	return min[U](v, cmp)
-}
-
-func (v *mapIterable[T, U]) Max(cmp func(a U, b U) bool) (U, bool) {
-	return max[U](v, cmp)
-}
-
 func (v *mapIterable[T, U]) Reduce(f func(acc U, v U) U) (U, bool) {
 	return reduce[U](v, f)
 }

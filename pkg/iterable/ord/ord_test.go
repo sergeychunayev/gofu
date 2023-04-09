@@ -151,20 +151,20 @@ func TestGt(t *testing.T) {
 	require.Equal(t, true, ord.Gt[int](2, 1))
 }
 
-func TestSlice_SumOrd(t *testing.T) {
+func TestSlice_Sum(t *testing.T) {
 	res, ok := ord.New([]int{1, 2, 3}).SumOrd()
 	require.True(t, ok)
 	require.Equal(t, 6, res)
 }
 
-func TestSlice_MinOrd(t *testing.T) {
-	res, ok := ord.New([]int{1, 2, 3}).MinOrd()
+func TestSlice_Min(t *testing.T) {
+	res, ok := ord.New([]int{1, 2, 3}).Min()
 	require.True(t, ok)
 	require.Equal(t, 1, res)
 }
 
-func TestSlice_MaxOrd(t *testing.T) {
-	res, ok := ord.New([]int{1, 2, 3}).MaxOrd()
+func TestSlice_Max(t *testing.T) {
+	res, ok := ord.New([]int{1, 2, 3}).Max()
 	require.True(t, ok)
 	require.Equal(t, 3, res)
 }

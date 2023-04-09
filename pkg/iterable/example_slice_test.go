@@ -88,48 +88,6 @@ func ExampleSlice_Any() {
 	// Output: true
 }
 
-func ExampleSlice_Min() {
-	type S struct {
-		name  string
-		value int
-	}
-	res, ok := iterable.
-		New([]S{
-			{"one", -1},
-			{"two", -1},
-			{"three", -100},
-		}).
-		Min(func(a S, b S) bool {
-			return a.value < b.value
-		})
-	fmt.Println(ok)
-	fmt.Println(res)
-	// Output:
-	// true
-	// {three -100}
-}
-
-func ExampleSlice_Max() {
-	type S struct {
-		name  string
-		value int
-	}
-	res, ok := iterable.
-		New([]S{
-			{"one", -1},
-			{"two", -1},
-			{"three", 100},
-		}).
-		Max(func(a S, b S) bool {
-			return a.value > b.value
-		})
-	fmt.Println(ok)
-	fmt.Println(res)
-	// Output:
-	// true
-	// {three 100}
-}
-
 func ExampleSlice_Reduce() {
 	res, _ := iterable.
 		New([]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}).

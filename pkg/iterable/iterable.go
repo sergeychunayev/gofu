@@ -13,10 +13,6 @@ type Iterable[T any] interface {
 
 	Any(f func(v T) bool) bool
 
-	Min(cmp func(a T, b T) bool) (T, bool)
-
-	Max(cmp func(a T, b T) bool) (T, bool)
-
 	Reduce(f func(acc T, v T) T) (T, bool)
 
 	Sort(less func(a T, b T) bool) Iterable[T]
@@ -64,14 +60,6 @@ func (v *Slice[T]) All(f func(v T) bool) bool {
 
 func (v *Slice[T]) Any(f func(v T) bool) bool {
 	return doAny[T](v, f)
-}
-
-func (v *Slice[T]) Min(cmp func(a T, b T) bool) (T, bool) {
-	return min[T](v, cmp)
-}
-
-func (v *Slice[T]) Max(cmp func(a T, b T) bool) (T, bool) {
-	return max[T](v, cmp)
 }
 
 func (v *Slice[T]) Reduce(f func(acc T, v T) T) (T, bool) {
