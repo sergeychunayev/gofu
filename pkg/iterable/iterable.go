@@ -1,7 +1,5 @@
 package iterable
 
-import "sort"
-
 type Iterable[T any] interface {
 	HasNext() bool
 
@@ -49,75 +47,39 @@ func (v *Slice[T]) Next() T {
 }
 
 func (v *Slice[T]) Filter(f func(v T) bool) Iterable[T] {
-	var res []T
-	for v.HasNext() {
-		val := v.Next()
-		if f(val) {
-			res = append(res, val)
-		}
+	return &filterIterable[T]{
+		v,
+		f,
+		nil,
 	}
-	return New(res)
 }
 
 func (v *Slice[T]) For(f func(v T, i int)) {
-	i := 0
-	for v.HasNext() {
-		f(v.Next(), i)
-		i++
-	}
+	doFor[T](v, f)
 }
 
 func (v *Slice[T]) All(f func(v T) bool) bool {
-	for v.HasNext() {
-		if !f(v.Next()) {
-			return false
-		}
-	}
-	return true
+	return all[T](v, f)
 }
 
 func (v *Slice[T]) Any(f func(v T) bool) bool {
-	for v.HasNext() {
-		if f(v.Next()) {
-			return true
-		}
-	}
-	return false
+	return doAny[T](v, f)
 }
 
 func (v *Slice[T]) Min(cmp func(a T, b T) bool) (T, bool) {
-	return v.Reduce(func(acc T, v T) T {
-		if cmp(acc, v) {
-			return acc
-		}
-		return v
-	})
+	return min[T](v, cmp)
 }
 
 func (v *Slice[T]) Max(cmp func(a T, b T) bool) (T, bool) {
-	return v.Reduce(func(acc T, v T) T {
-		if cmp(acc, v) {
-			return acc
-		}
-		return v
-	})
+	return max[T](v, cmp)
 }
 
 func (v *Slice[T]) Reduce(f func(acc T, v T) T) (T, bool) {
-	var res T
-	if !v.HasNext() {
-		return res, false
-	}
-
-	res = Fold[T, T](v, f, v.Next())
-	return res, true
+	return reduce[T](v, f)
 }
 
 func (v *Slice[T]) Sort(less func(a T, b T) bool) Iterable[T] {
-	sort.Slice(v.slice, func(i int, j int) bool {
-		return less(v.slice[i], v.slice[j])
-	})
-	return New(v.slice)
+	return doSort[T](v, less)
 }
 
 func (v *Slice[T]) Cycle() Iterable[T] {
@@ -151,12 +113,7 @@ func (v *Cycle[T]) Next() T {
 }
 
 func Map[T any, U any](v Iterable[T], f func(v T) U) Iterable[U] {
-	var res []U
-	for v.HasNext() {
-		u := f(v.Next())
-		res = append(res, u)
-	}
-	return New(res)
+	return &mapIterable[T, U]{v, f}
 }
 
 func Fold[T any, U any](v Iterable[T], f func(acc U, v T) U, initial U) U {
