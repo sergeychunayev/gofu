@@ -1,34 +1,48 @@
 package option
 
 type Option[T any] interface {
-	opt()
+	IsNone() bool
+	IsSome() bool
+	Unwrap() T
+	UnwrapOr(def T) T
 }
 
-type opt[T any] struct {
-	V *T
+type None[T any] struct{}
+
+func (*None[T]) IsNone() bool {
+	return true
+}
+func (*None[T]) IsSome() bool {
+	return false
+}
+func (*None[T]) Unwrap() T {
+	panic("None")
+}
+func (*None[T]) UnwrapOr(def T) T {
+	return def
 }
 
-type None[T any] opt[T]
-
-//var N = NewNone()
-
-type Some[T any] opt[T]
-
-func (v None[T]) opt() {
+type Some[T any] struct {
+	v T
 }
 
-func (v Some[T]) opt() {
+func (*Some[T]) IsNone() bool {
+	return false
+}
+func (*Some[T]) IsSome() bool {
+	return true
+}
+func (v *Some[T]) Unwrap() T {
+	return v.v
+}
+func (v *Some[T]) UnwrapOr(T) T {
+	return v.v
 }
 
-func New[T any](v *T) Option[T] {
-	if v == nil {
-		return NONE
-	}
-	return Some[T]{v}
+func No[T any]() Option[T] {
+	return &None[T]{}
 }
 
-var NONE = newNone[any]()
-
-func newNone[T any]() Option[T] {
-	return None[T]{}
+func Of[T any](v T) Option[T] {
+	return &Some[T]{v}
 }
