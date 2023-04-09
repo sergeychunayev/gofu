@@ -151,6 +151,70 @@ func main() {
 }
 ```
 
+### MinBy
+
+```go
+package main
+
+import (
+	"fmt"
+
+	"github.com/sergeychunayev/gofu/pkg/iterable"
+)
+
+func main() {
+	type S struct {
+		name  string
+		value int
+	}
+	itr := iterable.New([]S{
+		{"one", 1},
+		{"two", 2},
+		{"three", 3},
+	})
+	res, ok := iterable.MinBy(itr, func(v S) int {
+		return v.value
+	})
+	fmt.Println(ok)
+	fmt.Println(res)
+	// Output:
+	// true
+	// {one 1}
+}
+```
+
+### MaxBy
+
+```go
+package main
+
+import (
+	"fmt"
+
+	"github.com/sergeychunayev/gofu/pkg/iterable"
+)
+
+func main() {
+	type S struct {
+		name  string
+		value int
+	}
+	itr := iterable.New([]S{
+		{"one", 1},
+		{"two", 2},
+		{"three", 3},
+	})
+	res, ok := iterable.MaxBy(itr, func(v S) int {
+		return v.value
+	})
+	fmt.Println(ok)
+	fmt.Println(res)
+	// Output:
+	// true
+	// {three 3}
+}
+```
+
 ### Reduce
 https://go.dev/play/p/xt2eAAd0FAX
 
