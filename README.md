@@ -148,12 +148,11 @@ func main() {
 		})
 
 	fmt.Printf("res: %+v\n", min) // res: {name:c value:1}
-
 }
 ```
 
 ### Reduce
-https://go.dev/play/p/JtUgM4qWB7q
+https://go.dev/play/p/xt2eAAd0FAX
 
 ```go
 package main
@@ -165,11 +164,6 @@ import (
 )
 
 func main() {
-	type s struct {
-		name  string
-		value int
-	}
-
 	res, _ := iterable.
 		New([]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}).
 		Reduce(func(acc int, v int) int {
@@ -177,7 +171,6 @@ func main() {
 		})
 
 	fmt.Printf("res: %+v\n", res) // res: 55
-
 }
 ```
 
