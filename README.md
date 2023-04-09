@@ -2,8 +2,12 @@
 [![Dependency Review](https://github.com/sergeychunayev/gofu/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/sergeychunayev/gofu/actions/workflows/dependency-review.yml)
 [![Build](https://github.com/sergeychunayev/gofu/actions/workflows/build.yml/badge.svg)](https://github.com/sergeychunayev/gofu/actions/workflows/build.yml)
 
-# gofu
+<img src="https://user-images.githubusercontent.com/57276805/230751843-c0972a6e-64ee-439f-a21c-054c678326bb.png" />
+
+# GoFu
 ## Go Functional
+
+Functional programming for Go.
 
 # Examples
 
