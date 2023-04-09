@@ -613,3 +613,125 @@ func TestMaxFunc(t *testing.T) {
 	require.Equal(t, 2, Max(2, 1))
 	require.Equal(t, 2, Max(2, 2))
 }
+
+func TestMinBy(t *testing.T) {
+	type S struct {
+		name  string
+		value int
+	}
+
+	testCases := []struct {
+		name     string
+		input    []S
+		expected Tuple[S, bool]
+	}{
+		{
+			"Empty",
+			[]S{},
+			Tuple[S, bool]{S{}, false},
+		},
+		{
+			"Increasing",
+			[]S{
+				{"one", 1},
+				{"two", 2},
+				{"three", 3},
+			},
+			Tuple[S, bool]{S{"one", 1}, true},
+		},
+		{
+			"Decreasing",
+			[]S{
+				{"three", 3},
+				{"two", 2},
+				{"one", 1},
+			},
+			Tuple[S, bool]{S{"one", 1}, true},
+		},
+		{
+			"All same",
+			[]S{
+				{"one", 1},
+				{"two", 1},
+				{"three", 1},
+			},
+			Tuple[S, bool]{S{"one", 1}, true},
+		},
+		{
+			"One",
+			[]S{{"one", 1}},
+			Tuple[S, bool]{S{"one", 1}, true},
+		},
+	}
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			itr := New(tc.input)
+			res, ok := MinBy(itr, func(v S) int {
+				return v.value
+			})
+			tup := Tuple[S, bool]{res, ok}
+			require.Equal(t, tc.expected, tup)
+		})
+	}
+}
+
+func TestMaxBy(t *testing.T) {
+	type S struct {
+		name  string
+		value int
+	}
+
+	testCases := []struct {
+		name     string
+		input    []S
+		expected Tuple[S, bool]
+	}{
+		{
+			"Empty",
+			[]S{},
+			Tuple[S, bool]{S{}, false},
+		},
+		{
+			"Increasing",
+			[]S{
+				{"one", 1},
+				{"two", 2},
+				{"three", 3},
+			},
+			Tuple[S, bool]{S{"three", 3}, true},
+		},
+		{
+			"Decreasing",
+			[]S{
+				{"three", 3},
+				{"two", 2},
+				{"one", 1},
+			},
+			Tuple[S, bool]{S{"three", 3}, true},
+		},
+		{
+			"All same",
+			[]S{
+				{"one", 1},
+				{"two", 1},
+				{"three", 1},
+			},
+			Tuple[S, bool]{S{"one", 1}, true},
+		},
+		{
+			"One",
+			[]S{{"one", 1}},
+			Tuple[S, bool]{S{"one", 1}, true},
+		},
+	}
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			itr := New(tc.input)
+			res, ok := MaxBy(itr, func(v S) int {
+				return v.value
+			})
+			tup := Tuple[S, bool]{res, ok}
+			require.Equal(t, tc.expected, tup)
+		})
+	}
+}

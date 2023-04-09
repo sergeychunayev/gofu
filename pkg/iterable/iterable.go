@@ -189,6 +189,28 @@ func GroupBy[T any, K comparable](it Iterable[T], keyF func(v T) K) map[K][]T {
 	}, make(map[K][]T))
 }
 
+func MinBy[T any, K Ord](it Iterable[T], keyF func(v T) K) (T, bool) {
+	return it.Reduce(func(a T, b T) T {
+		ak := keyF(a)
+		bk := keyF(b)
+		if bk < ak {
+			return b
+		}
+		return a
+	})
+}
+
+func MaxBy[T any, K Ord](it Iterable[T], keyF func(v T) K) (T, bool) {
+	return it.Reduce(func(a T, b T) T {
+		ak := keyF(a)
+		bk := keyF(b)
+		if bk > ak {
+			return b
+		}
+		return a
+	})
+}
+
 type Ord interface {
 	~string |
 		~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64 | ~uintptr |
