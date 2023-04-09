@@ -7,7 +7,7 @@
 # GoFu
 ## Go Functional
 
-Functional programming for Go.
+Functional programming for Go. With generics.
 
 # Examples
 
