@@ -12,13 +12,14 @@ Functional programming for Go. With generics.
 # Examples
 
 ### Filter and sort
-https://go.dev/play/p/82eV-chuxcf
+
 ```go
 package main
 
 import (
 	"fmt"
 	"github.com/sergeychunayev/gofu/pkg/iterable"
+	"github.com/sergeychunayev/gofu/pkg/iterable/ord"
 )
 
 func main() {
@@ -26,14 +27,14 @@ func main() {
 		Filter(func(v int) bool {
 			return v%2 == 0
 		}).
-		Sort(iterable.LtOrd[int]).
+		Sort(ord.Lt[int]).
 		ToSlice()
 	fmt.Println(arr) // [2 4]
 }
 ```
 
 ### Filter and sort a struct
-https://go.dev/play/p/U4bge6gqGMH
+
 ```go
 package main
 
@@ -70,7 +71,7 @@ func main() {
 ```
 
 ### GroupBy
-https://go.dev/play/p/bAEcdAmreuM
+
 ```go
 package main
 
@@ -116,7 +117,7 @@ func main() {
 ```
 
 ### Min
-https://go.dev/play/p/QeZSnWOAyOz
+
 ```go
 package main
 
@@ -160,6 +161,7 @@ import (
 	"fmt"
 
 	"github.com/sergeychunayev/gofu/pkg/iterable"
+	"github.com/sergeychunayev/gofu/pkg/iterable/ord"
 )
 
 func main() {
@@ -172,7 +174,7 @@ func main() {
 		{"two", 2},
 		{"three", 3},
 	})
-	res, ok := iterable.MinBy(itr, func(v S) int {
+	res, ok := ord.MinBy(itr, func(v S) int {
 		return v.value
 	})
 	fmt.Println(ok)
@@ -192,6 +194,7 @@ import (
 	"fmt"
 
 	"github.com/sergeychunayev/gofu/pkg/iterable"
+	"github.com/sergeychunayev/gofu/pkg/iterable/ord"
 )
 
 func main() {
@@ -204,7 +207,7 @@ func main() {
 		{"two", 2},
 		{"three", 3},
 	})
-	res, ok := iterable.MaxBy(itr, func(v S) int {
+	res, ok := ord.MaxBy(itr, func(v S) int {
 		return v.value
 	})
 	fmt.Println(ok)
@@ -216,7 +219,6 @@ func main() {
 ```
 
 ### Reduce
-https://go.dev/play/p/xt2eAAd0FAX
 
 ```go
 package main

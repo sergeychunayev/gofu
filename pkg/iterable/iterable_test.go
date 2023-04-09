@@ -1,6 +1,8 @@
-package iterable
+package iterable_test
 
 import (
+	"github.com/sergeychunayev/gofu/pkg/iterable"
+	"github.com/sergeychunayev/gofu/pkg/iterable/ord"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
@@ -9,33 +11,33 @@ func TestNew(t *testing.T) {
 	testCases := []struct {
 		name  string
 		input []int
-		check func(t *testing.T, itr Iterable[int])
+		check func(t *testing.T, itr iterable.Iterable[int])
 	}{
 		{
 			"nil",
 			nil,
-			func(t *testing.T, itr Iterable[int]) {
+			func(t *testing.T, itr iterable.Iterable[int]) {
 				require.False(t, itr.HasNext())
 			},
 		},
 		{
 			"empty",
 			[]int{},
-			func(t *testing.T, itr Iterable[int]) {
+			func(t *testing.T, itr iterable.Iterable[int]) {
 				require.False(t, itr.HasNext())
 			},
 		},
 		{
 			"not empty",
 			[]int{0},
-			func(t *testing.T, itr Iterable[int]) {
+			func(t *testing.T, itr iterable.Iterable[int]) {
 				require.True(t, itr.HasNext())
 			},
 		},
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			itr := New(tc.input)
+			itr := iterable.New(tc.input)
 			tc.check(t, itr)
 		})
 	}
@@ -43,8 +45,8 @@ func TestNew(t *testing.T) {
 
 func TestIterable(t *testing.T) {
 	arr := []int{1, 2, 3}
-	var itr Iterable[int]
-	itr = New(arr)
+	var itr iterable.Iterable[int]
+	itr = iterable.New(arr)
 	var res []int
 	for itr.HasNext() {
 		v := itr.Next()
@@ -52,34 +54,34 @@ func TestIterable(t *testing.T) {
 	}
 	require.Equal(t, arr, res)
 
-	bools := Map(New(arr), func(v int) bool {
+	bools := iterable.Map(iterable.New(arr), func(v int) bool {
 		return v%2 == 0
 	}).ToSlice()
 	require.Equal(t, []bool{false, true, false}, bools)
 
-	allTrue, ok := New(bools).Reduce(func(acc bool, v bool) bool {
+	allTrue, ok := iterable.New(bools).Reduce(func(acc bool, v bool) bool {
 		return acc && v
 	})
 	require.True(t, ok)
 	require.False(t, allTrue)
 
-	someTrue, ok := New(bools).Reduce(func(acc bool, v bool) bool {
+	someTrue, ok := iterable.New(bools).Reduce(func(acc bool, v bool) bool {
 		return acc || v
 	})
 	require.True(t, ok)
 	require.True(t, someTrue)
 
-	trues := New(bools).Filter(func(v bool) bool {
+	trues := iterable.New(bools).Filter(func(v bool) bool {
 		return v
 	}).ToSlice()
 	require.Equal(t, []bool{true}, trues)
 
-	falses := New(bools).Filter(func(v bool) bool {
+	falses := iterable.New(bools).Filter(func(v bool) bool {
 		return !v
 	}).ToSlice()
 	require.Equal(t, []bool{false, false}, falses)
 
-	cycle := New(arr).Cycle()
+	cycle := iterable.New(arr).Cycle()
 	require.Equal(t, 1, cycle.Next())
 	require.Equal(t, 2, cycle.Next())
 	require.Equal(t, 3, cycle.Next())
@@ -88,12 +90,12 @@ func TestIterable(t *testing.T) {
 
 func TestFor(t *testing.T) {
 	arr := []int{1, 2, 3}
-	itr := New(arr)
-	var res []Tuple[int, int]
+	itr := iterable.New(arr)
+	var res []iterable.Tuple[int, int]
 	itr.For(func(v int, i int) {
-		res = append(res, Tuple[int, int]{v, i})
+		res = append(res, iterable.Tuple[int, int]{A: v, B: i})
 	})
-	expected := []Tuple[int, int]{
+	expected := []iterable.Tuple[int, int]{
 		{1, 0},
 		{2, 1},
 		{3, 2},
@@ -143,7 +145,7 @@ func TestAll(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			itr := New(tc.input)
+			itr := iterable.New(tc.input)
 			res := itr.All(tc.f)
 			require.Equal(t, tc.expected, res)
 		})
@@ -192,7 +194,7 @@ func TestAny(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			itr := New(tc.input)
+			itr := iterable.New(tc.input)
 			res := itr.Any(tc.f)
 			require.Equal(t, tc.expected, res)
 		})
@@ -203,39 +205,39 @@ func TestMin(t *testing.T) {
 	testCases := []struct {
 		name     string
 		input    []int
-		expected Tuple[int, bool]
+		expected iterable.Tuple[int, bool]
 	}{
 		{
 			"Empty",
 			[]int{},
-			Tuple[int, bool]{0, false},
+			iterable.Tuple[int, bool]{},
 		},
 		{
 			"Increasing",
 			[]int{1, 2, 3},
-			Tuple[int, bool]{1, true},
+			iterable.Tuple[int, bool]{A: 1, B: true},
 		},
 		{
 			"Decreasing",
 			[]int{3, 2, 1},
-			Tuple[int, bool]{1, true},
+			iterable.Tuple[int, bool]{A: 1, B: true},
 		},
 		{
 			"All 0",
 			[]int{0, 0, 0},
-			Tuple[int, bool]{0, true},
+			iterable.Tuple[int, bool]{B: true},
 		},
 		{
 			"One 0",
 			[]int{0},
-			Tuple[int, bool]{0, true},
+			iterable.Tuple[int, bool]{B: true},
 		},
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			itr := New(tc.input)
-			res, ok := itr.Min(LtOrd[int])
-			tup := Tuple[int, bool]{res, ok}
+			itr := iterable.New(tc.input)
+			res, ok := itr.Min(ord.Lt[int])
+			tup := iterable.Tuple[int, bool]{A: res, B: ok}
 			require.Equal(t, tc.expected, tup)
 		})
 	}
@@ -245,39 +247,39 @@ func TestMax(t *testing.T) {
 	testCases := []struct {
 		name     string
 		input    []int
-		expected Tuple[int, bool]
+		expected iterable.Tuple[int, bool]
 	}{
 		{
 			"Empty",
 			[]int{},
-			Tuple[int, bool]{0, false},
+			iterable.Tuple[int, bool]{},
 		},
 		{
 			"Increasing",
 			[]int{1, 2, 3},
-			Tuple[int, bool]{3, true},
+			iterable.Tuple[int, bool]{A: 3, B: true},
 		},
 		{
 			"Decreasing",
 			[]int{3, 2, 1},
-			Tuple[int, bool]{3, true},
+			iterable.Tuple[int, bool]{A: 3, B: true},
 		},
 		{
 			"All 0",
 			[]int{0, 0, 0},
-			Tuple[int, bool]{0, true},
+			iterable.Tuple[int, bool]{B: true},
 		},
 		{
 			"One 0",
 			[]int{0},
-			Tuple[int, bool]{0, true},
+			iterable.Tuple[int, bool]{B: true},
 		},
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			itr := New(tc.input)
-			res, ok := itr.Max(GtOrd[int])
-			tup := Tuple[int, bool]{res, ok}
+			itr := iterable.New(tc.input)
+			res, ok := itr.Max(ord.Gt[int])
+			tup := iterable.Tuple[int, bool]{A: res, B: ok}
 			require.Equal(t, tc.expected, tup)
 		})
 	}
@@ -332,8 +334,8 @@ func TestSort(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			itr := New(tc.input)
-			res := itr.Sort(LtOrd[int])
+			itr := iterable.New(tc.input)
+			res := itr.Sort(ord.Lt[int])
 			tc.check(t, tc.input, res.ToSlice())
 		})
 	}
@@ -394,7 +396,7 @@ func TestSortStruct(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			itr := New(tc.input)
+			itr := iterable.New(tc.input)
 			res := itr.Sort(func(a s, b s) bool {
 				return a.intV < b.intV
 			})
@@ -458,7 +460,7 @@ func TestSortStructDesc(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			itr := New(tc.input)
+			itr := iterable.New(tc.input)
 			res := itr.Sort(func(a s, b s) bool {
 				return a.intV > b.intV
 			})
@@ -471,12 +473,12 @@ func TestCycle(t *testing.T) {
 	testCases := []struct {
 		name  string
 		input []int
-		check func(t *testing.T, input []int, result Iterable[int])
+		check func(t *testing.T, input []int, result iterable.Iterable[int])
 	}{
 		{
 			"Empty",
 			[]int{},
-			func(t *testing.T, input []int, result Iterable[int]) {
+			func(t *testing.T, input []int, result iterable.Iterable[int]) {
 				require.Empty(t, input)
 				require.False(t, result.HasNext())
 			},
@@ -484,7 +486,7 @@ func TestCycle(t *testing.T) {
 		{
 			"Loop",
 			[]int{1, 2, 3},
-			func(t *testing.T, input []int, result Iterable[int]) {
+			func(t *testing.T, input []int, result iterable.Iterable[int]) {
 				require.Equal(t, []int{1, 2, 3}, input)
 				var arr []int
 				i := 0
@@ -499,7 +501,7 @@ func TestCycle(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			itr := New(tc.input)
+			itr := iterable.New(tc.input)
 			res := itr.Cycle()
 			tc.check(t, tc.input, res)
 		})
@@ -511,7 +513,7 @@ func TestZip(t *testing.T) {
 		name     string
 		a        []int
 		b        []int
-		expected []Tuple[int, int]
+		expected []iterable.Tuple[int, int]
 	}{
 		{
 			"Empty",
@@ -523,7 +525,7 @@ func TestZip(t *testing.T) {
 			"Same size",
 			[]int{1, 2, 3},
 			[]int{4, 5, 6},
-			[]Tuple[int, int]{
+			[]iterable.Tuple[int, int]{
 				{1, 4},
 				{2, 5},
 				{3, 6},
@@ -533,7 +535,7 @@ func TestZip(t *testing.T) {
 			"a has more elements",
 			[]int{1, 2, 3, 4},
 			[]int{4, 5, 6},
-			[]Tuple[int, int]{
+			[]iterable.Tuple[int, int]{
 				{1, 4},
 				{2, 5},
 				{3, 6},
@@ -543,7 +545,7 @@ func TestZip(t *testing.T) {
 			"b has more elements",
 			[]int{1, 2, 3},
 			[]int{4, 5, 6, 7},
-			[]Tuple[int, int]{
+			[]iterable.Tuple[int, int]{
 				{1, 4},
 				{2, 5},
 				{3, 6},
@@ -552,9 +554,9 @@ func TestZip(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			aIt := New(tc.a)
-			bIt := New(tc.b)
-			res := Zip(aIt, bIt)
+			aIt := iterable.New(tc.a)
+			bIt := iterable.New(tc.b)
+			res := iterable.Zip(aIt, bIt)
 			require.Equal(t, tc.expected, res.ToSlice())
 		})
 	}
@@ -569,8 +571,8 @@ func TestFold(t *testing.T) {
 		{"a", 1},
 		{"b", 2},
 	}
-	itr := New(arr)
-	res := Fold(itr, func(acc map[string]s, v s) map[string]s {
+	itr := iterable.New(arr)
+	res := iterable.Fold(itr, func(acc map[string]s, v s) map[string]s {
 		acc[v.strVal] = v
 		return acc
 	}, make(map[string]s))
@@ -591,8 +593,8 @@ func TestGroupBy(t *testing.T) {
 		{"b", 2},
 		{"a", 3},
 	}
-	itr := New(arr)
-	res := GroupBy(itr, func(v s) string {
+	itr := iterable.New(arr)
+	res := iterable.GroupBy(itr, func(v s) string {
 		return v.strVal
 	})
 	expected := map[string][]s{
@@ -600,138 +602,4 @@ func TestGroupBy(t *testing.T) {
 		"b": {{"b", 2}},
 	}
 	require.Equal(t, expected, res)
-}
-
-func TestMinFunc(t *testing.T) {
-	require.Equal(t, 1, Min(1, 2))
-	require.Equal(t, 1, Min(2, 1))
-	require.Equal(t, 1, Min(1, 1))
-}
-
-func TestMaxFunc(t *testing.T) {
-	require.Equal(t, 2, Max(1, 2))
-	require.Equal(t, 2, Max(2, 1))
-	require.Equal(t, 2, Max(2, 2))
-}
-
-func TestMinBy(t *testing.T) {
-	type S struct {
-		name  string
-		value int
-	}
-
-	testCases := []struct {
-		name     string
-		input    []S
-		expected Tuple[S, bool]
-	}{
-		{
-			"Empty",
-			[]S{},
-			Tuple[S, bool]{S{}, false},
-		},
-		{
-			"Increasing",
-			[]S{
-				{"one", 1},
-				{"two", 2},
-				{"three", 3},
-			},
-			Tuple[S, bool]{S{"one", 1}, true},
-		},
-		{
-			"Decreasing",
-			[]S{
-				{"three", 3},
-				{"two", 2},
-				{"one", 1},
-			},
-			Tuple[S, bool]{S{"one", 1}, true},
-		},
-		{
-			"All same",
-			[]S{
-				{"one", 1},
-				{"two", 1},
-				{"three", 1},
-			},
-			Tuple[S, bool]{S{"one", 1}, true},
-		},
-		{
-			"One",
-			[]S{{"one", 1}},
-			Tuple[S, bool]{S{"one", 1}, true},
-		},
-	}
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-			itr := New(tc.input)
-			res, ok := MinBy(itr, func(v S) int {
-				return v.value
-			})
-			tup := Tuple[S, bool]{res, ok}
-			require.Equal(t, tc.expected, tup)
-		})
-	}
-}
-
-func TestMaxBy(t *testing.T) {
-	type S struct {
-		name  string
-		value int
-	}
-
-	testCases := []struct {
-		name     string
-		input    []S
-		expected Tuple[S, bool]
-	}{
-		{
-			"Empty",
-			[]S{},
-			Tuple[S, bool]{S{}, false},
-		},
-		{
-			"Increasing",
-			[]S{
-				{"one", 1},
-				{"two", 2},
-				{"three", 3},
-			},
-			Tuple[S, bool]{S{"three", 3}, true},
-		},
-		{
-			"Decreasing",
-			[]S{
-				{"three", 3},
-				{"two", 2},
-				{"one", 1},
-			},
-			Tuple[S, bool]{S{"three", 3}, true},
-		},
-		{
-			"All same",
-			[]S{
-				{"one", 1},
-				{"two", 1},
-				{"three", 1},
-			},
-			Tuple[S, bool]{S{"one", 1}, true},
-		},
-		{
-			"One",
-			[]S{{"one", 1}},
-			Tuple[S, bool]{S{"one", 1}, true},
-		},
-	}
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-			itr := New(tc.input)
-			res, ok := MaxBy(itr, func(v S) int {
-				return v.value
-			})
-			tup := Tuple[S, bool]{res, ok}
-			require.Equal(t, tc.expected, tup)
-		})
-	}
 }
