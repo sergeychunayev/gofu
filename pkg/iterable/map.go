@@ -50,8 +50,7 @@ func (v *mapIterable[T, U]) Sort(less func(a U, b U) bool) Iterable[U] {
 }
 
 func (v *mapIterable[T, U]) Cycle() Iterable[U] {
-	var res = v.ToSlice()
-	return New(res).Cycle()
+	return cycle[U](v)
 }
 
 func (v *mapIterable[T, U]) ToSlice() []U {

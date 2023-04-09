@@ -30,6 +30,14 @@ func (v *filterIterable[T]) Next() T {
 	return res
 }
 
+func (v *filterIterable[T]) Sort(less func(a T, b T) bool) Iterable[T] {
+	return doSort[T](v, less)
+}
+
+func (v *filterIterable[T]) Cycle() Iterable[T] {
+	return cycle[T](v)
+}
+
 func (v *filterIterable[T]) ToSlice() []T {
 	return toSlice[T](v)
 }

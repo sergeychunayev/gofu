@@ -64,6 +64,11 @@ func doSort[T any](it Iterable[T], less func(a T, b T) bool) Iterable[T] {
 	return New(res)
 }
 
+func cycle[T any](it Iterable[T]) Iterable[T] {
+	var res = it.ToSlice()
+	return New(res).Cycle()
+}
+
 func toSlice[T any](it Iterable[T]) []T {
 	var res []T
 	for it.HasNext() {

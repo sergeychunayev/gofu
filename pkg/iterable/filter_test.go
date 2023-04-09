@@ -31,3 +31,35 @@ func TestFilterIterable_HasNext(t *testing.T) {
 		})
 	}
 }
+
+func TestFilterIterable_Cycle(t *testing.T) {
+	arr := []int{1, 2, 3}
+	itr := filterIterable[int]{
+		New(arr),
+		func(v int) bool {
+			return v > 1
+		},
+		nil,
+	}
+	cyc := itr.Cycle()
+	var res []int
+	for i := 0; i <= 4; i++ {
+		res = append(res, cyc.Next())
+	}
+	require.Equal(t, []int{2, 3, 2, 3, 2}, res)
+}
+
+func TestFilterIterable_Sort(t *testing.T) {
+	arr := []int{3, 2, 1}
+	itr := filterIterable[int]{
+		New(arr),
+		func(v int) bool {
+			return v > 1
+		},
+		nil,
+	}
+	res := itr.Sort(func(a int, b int) bool {
+		return a < b
+	}).ToSlice()
+	require.Equal(t, []int{2, 3}, res)
+}
