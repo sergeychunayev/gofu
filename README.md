@@ -1,4 +1,4 @@
-[![CodeQL](https://github.com/sergeychunayev/gofu/actions/workflows/codeql.yml/badge.svg)](https://github.com/sergeychunayev/gofu/actions/workflows/codeql.yml)
+[![CodeQL](https://github.com/sergeychunayev/gofu/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/sergeychunayev/gofu/actions/workflows/github-code-scanning/codeql)
 [![Dependency Review](https://github.com/sergeychunayev/gofu/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/sergeychunayev/gofu/actions/workflows/dependency-review.yml)
 [![Build](https://github.com/sergeychunayev/gofu/actions/workflows/build.yml/badge.svg)](https://github.com/sergeychunayev/gofu/actions/workflows/build.yml)
 
