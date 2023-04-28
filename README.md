@@ -1,6 +1,7 @@
 [![CodeQL](https://github.com/sergeychunayev/gofu/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/sergeychunayev/gofu/actions/workflows/github-code-scanning/codeql)
 [![Dependency Review](https://github.com/sergeychunayev/gofu/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/sergeychunayev/gofu/actions/workflows/dependency-review.yml)
 [![Build](https://github.com/sergeychunayev/gofu/actions/workflows/build.yml/badge.svg)](https://github.com/sergeychunayev/gofu/actions/workflows/build.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/sergeychunayev/gofu)](https://goreportcard.com/report/github.com/sergeychunayev/gofu)
 
 ![logo](https://user-images.githubusercontent.com/57276805/230751843-c0972a6e-64ee-439f-a21c-054c678326bb.png)
 
